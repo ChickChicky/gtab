@@ -1,4 +1,5 @@
 #include "gtab.h"
+#include "threads.h"
 
 void msleep(long ms) {
     struct timespec ts = {
@@ -52,17 +53,17 @@ int GTRunServer(GTEnv env) {
 
     int client_fd;
     struct sockaddr_in6 client_addr;
-    pthread_t client_thread;
+    threads_thread client_thread;
     GTHandleData client_data;
     for (;;) {
         client_fd = accept(server_fd, (struct sockaddr*)&client_addr,  (socklen_t*)sizeof(client_addr));
         client_data.started = 0;
         client_data.fd = client_fd;
-        pthread_create(&client_thread, NULL, GTHandleClient, &client_data);
+        threads_create(&client_thread, GTHandleClient, &client_data);
         for (size_t i = 0; i < 5 && !client_data.started; ++i)
             msleep(100);
         if (!client_data.started) {
-            pthread_cancel(client_thread);
+            threads_cancel(&client_thread);
             printf("Client handler took too long to detach\n");
         }
     }

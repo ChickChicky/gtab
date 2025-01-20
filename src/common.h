@@ -29,16 +29,20 @@
     #include <Windows.h>
 #endif
 
-#include <stdio.h>
+#if defined(__gnu_linux__)
 #include <linux/input-event-codes.h>
 #include <linux/input.h>
 #include <linux/uinput.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <time.h>
 #include <pthread.h>
+#endif
+
+#include <stdio.h>
+
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <assert.h>
