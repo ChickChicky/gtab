@@ -1,6 +1,6 @@
 #include "stylus.h"
 
-#if defined(__gnu_linux__)
+#if GT_GENV == GT_GENV_X11
 
 #define GT_MAXV 65535
 
@@ -83,32 +83,10 @@ void GTStylusCreate(GTStylus *stylus) {
 }
 
 void GTStylusUpdate(GTStylus *stylus, int x, int y, int pressure) {
-    // GTStylusSendEvent(stylus, (GTStylusEvent){.event=GT_STYLUS_EVENT_X,.data.x=x});
-    // GTStylusSendEvent(stylus, (GTStylusEvent){.event=GT_STYLUS_EVENT_Y,.data.y=y});
-    // GTStylusSendEvent(stylus, (GTStylusEvent){.event=GT_STYLUS_EVENT_PRESSURE,.data.pressure=pressure});
     GTStylusSendEventUtil(stylus->fd, EV_ABS, ABS_X, x);
     GTStylusSendEventUtil(stylus->fd, EV_ABS, ABS_Y, y);
+    GTStylusSendEventUtil(stylus->fd, EV_ABS, ABS_PRESSURE, pressure);
     GTStylusSendEventUtil(stylus->fd, EV_SYN, SYN_REPORT, 0);
-}
-
-void GTStylusSendEvent(GTStylus *stylus, GTStylusEvent event) {
-    int type, code,data;
-    if (event.event == GT_STYLUS_EVENT_X) {
-        type = EV_ABS;
-        code = ABS_X;
-        data = event.data.x;
-    }
-    else if (event.event == GT_STYLUS_EVENT_Y) {
-        type = EV_ABS;
-        code = ABS_Y;
-        data = event.data.y;
-    }
-    else if (event.event == GT_STYLUS_EVENT_PRESSURE) {
-        type = EV_ABS;
-        code = ABS_PRESSURE;
-        data = event.data.pressure;
-    }
-    GTStylusSendEventUtil(stylus->fd, type, code, data);
 }
 
 void GTStylusBind(GTStylus *stylus, GTPoint client, GTScreenList *screens, int screen) {

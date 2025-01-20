@@ -83,6 +83,49 @@ void *GTHandleClient(void *d) {
 
 #define SHIFT(argc, argv) (assert(*(argc) > 0),(*(argc))--,*((*(argv))++))
 
+void GTTestStylus(int screen) {
+    if (screen < 0) {
+        printf("Screen number (%d) must be >=0\n", screen);
+        return;
+    }
+    
+    GTStylus stylus;
+    GTStylusCreate(&stylus);
+    
+    GTScreenList screens = GTScreenFetch();
+    if (screen >= (int)screens.count) {
+        printf("Screen number (%d) must be <%d\n", screen, (int)screens.count);
+        return;
+    }
+
+    GTRect box = screens.screens[screen].location;
+    GTStylusBind(&stylus, (GTPoint){box.width, box.height}, &screens, screen);
+    
+    int x = 100;
+    int y = 200;
+    int vx = 10;
+    int vy = -10;
+
+    for (int t=0; t<1000; ++t) {
+        msleep(10);
+
+        int nx = x + vx;
+        int ny = y + vy;
+
+        if (nx > box.width || nx < 0)
+            vx*= -1;
+        else if (ny > box.height || ny < 0)
+            vy*= -1;
+        else {
+            x = nx;
+            y = ny;
+        }
+
+        GTPoint pt = GTStylusMapCoord(&stylus, (GTPoint){x, y});
+        GTStylusUpdate(&stylus, pt.x, pt.y, 0);
+    }
+}
+
 int main(int argc, const char **argv) {
     const char *program_name = SHIFT(&argc, &argv);
 
@@ -112,15 +155,10 @@ int main(int argc, const char **argv) {
             env.addr = SHIFT(&argc, &argv);
         }
         else if (strcmp(arg, "-t") == 0 || strcmp(arg, "--test") == 0) {
-            GTStylus stylus;
-            GTStylusCreate(&stylus);
-            GTScreenList screens = GTScreenFetch();
-            GTStylusBind(&stylus, (GTPoint){100,100}, &screens, 0);
-            for (int t=0;;t+=1) {
-                msleep(100);
-                GTPoint pt = GTStylusMapCoord(&stylus, (GTPoint){50, 50});
-                GTStylusUpdate(&stylus, pt.x, pt.y, 0);
-            }
+            int screen = 0;
+            if (argc)
+                screen = strtol(SHIFT(&argc, &argv), NULL, 0);
+            GTTestStylus(screen);
             return 0;
         }
         else if (strcmp(arg, "-h") == 0 || strcmp(arg, "--help") == 0) {

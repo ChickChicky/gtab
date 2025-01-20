@@ -17,8 +17,12 @@
                     "   -s\n"
 #define HELP_A      "  --addr <a> : the address to connect/bind to\n"\
                     "   -a\n"
+#define HELP_P      "  --port <p> : the port to bind/connect to\n"\
+                    "   -p\n"
+#define HELP_T      "  --test [s] : tests the virtual stylus on screen <s>\n"\
+                    "   -t          defaults to the first one it finds\n"
 #define HELP_MODE   HELP_MODE_C HELP_MODE_S
-#define HELP_ALL    HELP_MODE HELP_MODE HELP_A
+#define HELP_ALL    HELP_MODE HELP_A HELP_P HELP_T
 #define HELP_USAGE  "Usage: %s [args...]\n" HELP_ALL
 
 typedef struct GTEnv GTEnv;
