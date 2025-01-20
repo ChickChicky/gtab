@@ -42,6 +42,16 @@ struct GTStylus {
     int fd;
 };
 
+#else
+
+struct GTStylus {
+    GTPoint display;
+    GTPoint client;
+    GTRect window;
+};
+
+#warning "Platform not supported for stylus"
+
 #endif
 
 #endif

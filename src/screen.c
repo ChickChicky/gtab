@@ -89,6 +89,13 @@ GTScreenList GTScreenFetchDisplay(Display *display) {
 
 #else
 
-    #error "Only X11 is currently supported"
+int gt_screen_unsupported_warned = 0;
+
+#define GTUNSUPPORTEDSCREEN() (gt_screen_unsupported_warned ? (void)0 : (void)printf("WARNING: Platform not supported for screen\n"), gt_screen_unsupported_warned=1)
+
+GTScreenList GTScreenFetch(void) {
+    GTUNSUPPORTEDSCREEN();
+    return (GTScreenList){ .count = 0 };
+}
 
 #endif

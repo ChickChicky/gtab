@@ -119,6 +119,42 @@ void GTStylusBind(GTStylus *stylus, GTPoint client, GTScreenList *screens, int s
 
 #else
 
-#error "Only GNU Linux is currently supported"
+int gt_stylus_unsupported_warned = 0;
+
+#define GTUNSUPPORTEDSTYLUS() (gt_stylus_unsupported_warned ? (void)0 : (void)printf("WARNING: Platform not supported for stylus\n"), gt_stylus_unsupported_warned=1)
+
+void GTStylusCreate(GTStylus *stylus) {
+    (void)stylus;
+    printf("WARNING: Platform not supported for stylus\n");
+}
+
+void GTStylusBind(GTStylus *stylus, GTPoint client, GTScreenList *screens, int screen) {
+    (void)stylus;
+    (void)client;
+    (void)screens;
+    (void)screen;
+    GTUNSUPPORTEDSTYLUS();
+}
+
+void GTStylusSendEvent(GTStylus *stylus, GTStylusEvent event) {
+    (void)stylus;
+    (void)event;
+    GTUNSUPPORTEDSTYLUS();
+}
+
+void GTStylusUpdate(GTStylus *stylus, int x, int y, int pressure) {
+    (void)stylus;
+    (void)x;
+    (void)y;
+    (void)pressure;
+    GTUNSUPPORTEDSTYLUS();
+}
+
+GTPoint GTStylusMapCoord(GTStylus *stylus, GTPoint pt) { 
+    (void)stylus;
+    (void)pt;
+    GTUNSUPPORTEDSTYLUS();
+    return (GTPoint){0,0}; 
+}
 
 #endif

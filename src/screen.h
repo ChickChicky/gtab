@@ -3,11 +3,24 @@
 
 #include "common.h"
 
+#if GT_GENV == GT_GENV_X11
+
 typedef struct GTScreenInfo GTScreenInfo;
 struct GTScreenInfo {
     Window window;
     GTRect location;
 };
+
+#else
+
+typedef struct GTScreenInfo GTScreenInfo;
+struct GTScreenInfo {
+    GTRect location;
+};
+
+#warning "Platform is not supported for screen"
+
+#endif
 
 typedef struct GTScreenList GTScreenList;
 struct GTScreenList {
@@ -15,8 +28,6 @@ struct GTScreenList {
     GTScreenInfo screens[MAX_SCREENS];
     size_t count;
 };
-
-typedef struct GTScreenEnv GTScreenEnv;
 
 GTScreenList GTScreenFetch(void);
 
